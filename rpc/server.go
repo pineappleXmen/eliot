@@ -30,7 +30,9 @@ func (c *Server) Start() {
 	defer listener.Close()
 	fmt.Println("server start listening ", addr)
 	for {
+		fmt.Println(listener.Addr())
 		conn, err := listener.Accept()
+		fmt.Println("accpet")
 		if err != nil {
 			fmt.Println("Error accepting connection:", err)
 			continue

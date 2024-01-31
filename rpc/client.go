@@ -28,7 +28,7 @@ type Reply struct {
 
 func (c *Client) Call(msg RPCMsg) {
 
-	client, err := rpc.Dial("tcp", "localhost:1234")
+	client, err := rpc.Dial("tcp", msg.Addr)
 	if err != nil {
 		log.Fatal("dialing:", err)
 	}
