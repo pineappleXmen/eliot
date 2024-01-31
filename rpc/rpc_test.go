@@ -4,17 +4,9 @@ import (
 	"fmt"
 	"net"
 	"testing"
-	"time"
 )
 
 func TestClient_Call(t *testing.T) {
-	server := Server{
-		port: "1234",
-		addr: "localhost",
-	}
-	go server.Start()
-	time.Sleep(time.Second)
-
 	dial, err := net.Dial("tcp", "192.168.31.224:1234")
 	fmt.Println(dial, err)
 
@@ -29,6 +21,15 @@ func TestClient_Call(t *testing.T) {
 		Reply:  Reply{},
 	})
 
+}
+
+func TestServer_Start(t *testing.T) {
+	host := "192.168.31.224"
+	port := "12345"
+	methods := []string{"AddServiceImpl.Add"}
+	services := []Service{new(AddServiceImpl)}
+	server := NewServer(host, port, methods, services)
+	server.Start()
 }
 
 func TestOne(t *testing.T) {
@@ -57,14 +58,6 @@ func TestOne(t *testing.T) {
 
 		fmt.Println(string(buffer))
 	}
-}
-
-func TestServer_Start(t *testing.T) {
-	server := Server{
-		port: "12345",
-		addr: "192.168.31.224",
-	}
-	server.Start()
 }
 
 func TestIP(t *testing.T) {
