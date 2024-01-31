@@ -26,7 +26,7 @@ type AppendEntriesContent struct {
 	Term         int64
 	PrevLogIndex int64
 	PrevLogTerm  int64
-	Entries      []log.Entry
+	Entries      []logs.Entry
 	LeaderCommit int64
 }
 
