@@ -12,16 +12,16 @@ type Server struct {
 	addr string
 }
 
-type Arith struct{}
+type HelloService struct{}
 
-func (a *Arith) Multiply(args Args, result *Reply) error {
-	result.Value = args.A * args.B
+func (p *HelloService) Hello(request string, reply *string) error {
+	*reply = "hello:" + request
 	return nil
 }
 
 func (c *Server) Start() {
 	addr := c.addr + ":" + c.port
-	rpc.Register(new(Arith))
+	rpc.Register(new(HelloService))
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		fmt.Println("Error starting server:", err)
@@ -35,7 +35,7 @@ func (c *Server) Start() {
 			fmt.Println("Error accepting connection:", err)
 			continue
 		}
-		go handleRPCRequest(conn)
+		rpc.ServeConn(conn)
 	}
 }
 

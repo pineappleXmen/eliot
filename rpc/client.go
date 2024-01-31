@@ -1,9 +1,9 @@
 package rpc
 
 import (
-	"encoding/gob"
 	"fmt"
-	"net"
+	"log"
+	"net/rpc"
 )
 
 type Client struct {
@@ -26,30 +26,19 @@ type Reply struct {
 	Value int
 }
 
-func (c *Client) Call(msg RPCMsg) RPCMsg {
-	fmt.Println("client start sending msg ", msg)
-	conn, err := net.Dial("tcp", msg.Addr)
-	if err != nil {
-		fmt.Println("Error connecting to server:", err)
-		return RPCMsg{Reply: Reply{Value: -1}} // 返回错误信息
-	}
-	defer conn.Close()
-	var resultMsg RPCMsg
+func (c *Client) Call(msg RPCMsg) {
 
-	// 发送请求消息
-	encoder := gob.NewEncoder(conn)
-	err = encoder.Encode(msg)
+	client, err := rpc.Dial("tcp", "localhost:1234")
 	if err != nil {
-		fmt.Println("Error encodingoding result message:", err)
-		return RPCMsg{Reply: Reply{Value: -1}} // 返回错误信息
+		log.Fatal("dialing:", err)
 	}
 
-	// 读取结果消息
-	decoder := gob.NewDecoder(conn)
-	err = decoder.Decode(&resultMsg)
+	var reply string
+	err = client.Call("HelloService.Hello", "hello", &reply)
 	if err != nil {
-		fmt.Println("Error decoding result message:", err)
-		return RPCMsg{Reply: Reply{Value: -1}} // 返回错误信息
+		log.Fatal(err)
 	}
-	return resultMsg
+
+	fmt.Println(reply)
+
 }
